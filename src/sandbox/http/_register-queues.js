@@ -3,6 +3,11 @@ const log = require('./_log');
 const chalk = require('chalk');
 const uuid = require('uuid').v4;
 const md5 = require('md5');
+const proxyquire = require('proxyquire');
+const path = require('path');
+
+const sandbox = require(path.join(process.cwd(), 'src', 'sandbox'));
+const overrides = typeof sandbox === 'object' ? sandbox.overrides : {};
 
 module.exports = (app, api, type, queues) => {
     if (queues) {
@@ -10,7 +15,7 @@ module.exports = (app, api, type, queues) => {
         queues.forEach(queue => {
             const route = `/_queues/${queue}`;
             const path = `${process.cwd()}/src/queues/${queue}`;
-            const lambda = require(path).handler;
+            const lambda = proxyquire(path, overrides).handler;
             log({ verb: 'post', route, path });
 
             app.post(route, (request, response) => {

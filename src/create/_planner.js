@@ -19,6 +19,10 @@ module.exports = function planner(arc) {
     {action:'create-shared', app},
   ]
 
+  if (arc.sandbox) {
+    plans.push({action:'create-sandbox-overrides', app})
+  }
+
   //
   // sns events
   if (arc.events) {
