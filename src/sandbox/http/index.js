@@ -13,6 +13,7 @@ let readArc = require('../../util/read-arc')
 var reg = require('./_register-route')
 var regHTTP = require('./_register-http-route')
 const regQueues = require('./_register-queues')
+const initSandbox = require('./_init-sandbox')
 var static = require('./_static')
 
 // config arcana
@@ -32,6 +33,9 @@ app.start = function start(callback) {
   var tuple = v=> (['get', v])
 
   // build the routes
+  if (web.sandbox !== undefined)
+    initSandbox(app, '@sandbox', 'sandbox', web.sandbox)
+
   if (web.queues)
     regQueues(app, '@queues', 'queue', web.queues)
 
